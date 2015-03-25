@@ -98,7 +98,7 @@ namespace NDjangoSignCookie
 
             // https://github.com/django/django/blob/stable/1.6.x/django/http/cookie.py#L45
             ck.Value = '"' + value + '"';
-            response.Cookies.Add(ck);
+            response.SetCookie(ck);
         }
 
         public static string GetSignedCookie(this HttpRequest request, string name, string salt = "")
