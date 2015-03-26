@@ -31,6 +31,8 @@ then
 * `SetSignedCookie` extention method will be added to `HttpResponse` object
 * `GetSignedCookie` extention method will be added to `HttpRequest` object
 
+Support both `System.Web` and `System.Web.MVC` request / response object.
+
 # Todo
 
 * Add max-age support when reading cookie.

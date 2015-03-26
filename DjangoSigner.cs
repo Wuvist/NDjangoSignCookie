@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Security.Cryptography;
 using System.Web;
+using System.Web.Mvc;
 
 namespace NDjangoSignCookie
 {
@@ -86,8 +87,11 @@ namespace NDjangoSignCookie
             return ToBase62(unixTimestamp);
         }
 
-        public static void SetSignedCookie(this HttpResponse response, HttpCookie ck, string salt = "")
+        public static void sign(HttpCookie ck, string salt = "")
         {
+            // todo: it's better to create a new cookie
+            // instead of changing existing cookie value
+
             // https://github.com/django/django/blob/stable/1.6.x/django/core/signing.py#L182
             string value = ck.Value + DjangoSigner.Sep + GetTimeStamp();
 
@@ -98,19 +102,17 @@ namespace NDjangoSignCookie
 
             // https://github.com/django/django/blob/stable/1.6.x/django/http/cookie.py#L45
             ck.Value = '"' + value + '"';
-            response.SetCookie(ck);
         }
 
-        public static string GetSignedCookie(this HttpRequest request, string name, string salt = "")
+        public static string unsign(HttpCookie ck, string salt)
         {
-            var ck = request.Cookies[name];
             if (ck == null)
             {
                 return string.Empty;
             }
 
             // https://github.com/django/django/blob/stable/1.6.x/django/http/request.py#L96
-            salt = name + salt;
+            salt = ck.Name + salt;
             string value = DjangoSigner.unsign(ck.Value.Trim('"'), salt);
 
             var sepPos = value.LastIndexOf(DjangoSigner.Sep);
@@ -121,6 +123,32 @@ namespace NDjangoSignCookie
 
             //todo: must check timestamp max-age
             return value.Substring(0, sepPos);
+        }
+
+        // For System.Web request / response
+        public static void SetSignedCookie(this HttpResponse response, HttpCookie ck, string salt = "")
+        {
+            sign(ck);
+            response.SetCookie(ck);
+        }
+
+        public static string GetSignedCookie(this HttpRequest request, string name, string salt = "")
+        {
+            var ck = request.Cookies[name];
+            return unsign(ck, salt);
+        }
+
+        // For System.Web.MVC  request / response
+        public static void SetSignedCookie(this HttpResponseBase response, HttpCookie ck, string salt = "")
+        {
+            sign(ck);
+            response.SetCookie(ck);
+        }
+
+        public static string GetSignedCookie(this HttpRequestBase request, string name, string salt = "")
+        {
+            var ck = request.Cookies[name];
+            return unsign(ck, salt);
         }
     }
 }
