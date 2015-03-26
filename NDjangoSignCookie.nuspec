@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>NDjangoSignCookie</id>
+    <version>1.0.0.2</version>
+    <title>$title$</title>
+    <authors>Wuvist</authors>
+    <owners>Wuvist</owners>
+    <projectUrl>https://github.com/Wuvist/NDjangoSignCookie</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Django Sign Cookie support for asp.net.
+
+So that Django app &amp; asp.net website could share the same signed cookie.</description>
+    <releaseNotes>initial release</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>django cookie security</tags>
+  </metadata>
+</package>
